@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="18">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"Unlimited Movement"</Description>
+      <LastState Activated="0"/>
+      <Color>80000008</Color>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{ Game   : h3hota.exe
+  Version:
+  Date   : 2016-10-12
+  Author : Kien
+
+  This script does blah blah blah
+}
+define(move,2B D1 3B D0 89 56 4D)
+define(embark,C7 46 4D 00000000)
+define(disembark,C7 46 4D 00000000)
+[ENABLE]
+//aobscanmodule should be used when the array of bytes change as game restart
+//otherwise we use static address for simplicity.
+//aobscanmodule(playerMove,h3hota.exe,2B D1 3B D0 89 56 4D) // should be unique
+alloc(customcode,2048,h3hota.exe)
+
+label(PlayerMove)
+label(moveExit)
+label(NPCMove)
+
+label(PlayerEmbark)
+label(embarkExit)
+label(NPCEmbark)
+
+label(PlayerDisembark)
+label(disembarkExit)
+label(NPCDisembark)
+
+registersymbol(customcode)
+//============CUSTOM CODE=====================
+customcode:
+//section1
+PlayerMove:
+  cmp byte ptr [esi+22], 6
+  jne NPCMove
+  db 90 90 90 90
+  //cmp edx,eax
+  //mov [esi+4D],edx
+  jmp moveExit
+
+NPCMove:
+  db move
+  jmp moveExit
+
+//end section1
+
+//section2
+PlayerEmbark:
+  cmp byte ptr [esi+22], 6
+  jne NPCEmbark
+  db 90 90 90 90 90 90 90
+  jmp embarkExit
+
+NPCEmbark:
+  db embark
+  jmp embarkExit
+
+//end section2
+
+//section3
+PlayerDisembark:
+  cmp byte ptr [esi+22], 6
+  jne NPCDisembark
+  db 90 90 90 90 90 90 90
+  jmp disembarkExit
+
+NPCDisembark:
+   db disembark
+   jmp disembarkExit
+
+//============END CUSTOM CODE=================
+
+//===============INJECION=====================
+"h3hota.exe"+80AA8:
+  jmp PlayerMove
+  nop
+  nop
+  moveExit:
+
+"h3hota.exe"+9E340:
+  jmp PlayerDisembark
+  nop
+  nop
+  disembarkExit:
+
+"h3hota.exe"+A0D08:
+  jmp PlayerEmbark
+  nop
+  nop
+  embarkExit:
+//============END INJECION=====================
+
+[DISABLE]
+"h3hota.exe"+80AA8:
+//sub edx,ecx
+//cmp edx,eax
+//mov [esi+4D],edx
+  db move
+
+"h3hota.exe"+9E340:
+//mov [esi+4D],00000000
+  db disembark
+
+"h3hota.exe"+A0D08:
+//mov [esi+4D],00000000
+  db embark
+
+unregistersymbol(customcode)
+dealloc(customcode)
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols>
+    <SymbolEntry>
+      <Name>INJECT</Name>
+      <Address>0040003E</Address>
+    </SymbolEntry>
+  </UserdefinedSymbols>
+  <Comments>Info about this table:
+</Comments>
+</CheatTable>
