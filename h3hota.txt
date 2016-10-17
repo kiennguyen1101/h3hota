@@ -61,7 +61,7 @@ PlayerEmbark:
   jmp embarkExit
 
 NPCEmbark:
-  db embark
+  mov [esi+4D],00000000
   jmp embarkExit
 
 //end section2
@@ -74,7 +74,7 @@ PlayerDisembark:
   jmp disembarkExit
 
 NPCDisembark:
-   db disembark
+   mov [esi+4D],00000000
    jmp disembarkExit
 
 //============END CUSTOM CODE=================
@@ -108,11 +108,11 @@ NPCDisembark:
 
 "h3hota.exe"+9E340:
 //mov [esi+4D],00000000
-  db disembark
+mov [esi+4D],00000000
 
 "h3hota.exe"+A0D08:
-//mov [esi+4D],00000000
-  db embark
+mov [esi+4D],00000000
+//  db C7 46 4D 00000000
 
 unregistersymbol(customcode)
 dealloc(customcode)
