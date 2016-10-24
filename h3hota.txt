@@ -4,7 +4,7 @@
     <CheatEntry>
       <ID>0</ID>
       <Description>"Unlimited Movement"</Description>
-      <LastState Activated="0"/>
+      <LastState Activated="1"/>
       <Color>80000008</Color>
       <VariableType>Auto Assembler Script</VariableType>
       <AssemblerScript>{ Game   : h3hota.exe
@@ -14,9 +14,17 @@
 
   This script does blah blah blah
 }
+
+//sub edx,ecx
+//cmp edx,eax
+//mov [esi+4D],edx
 define(move,2B D1 3B D0 89 56 4D)
-define(embark,C7 46 4D 00000000)
-define(disembark,C7 46 4D 00000000)
+define(embark,C7 46 4D 00 00 00 00)		//mov [esi+4D],00000000
+define(disembark,C7 46 4D 00 00 00 00)		//mov [esi+4D],00000000
+define(pond,C7 47 4D 00 00 00 00)	//mov [edi+4D],00000000
+define(copyMove,8B 57 49 3B C2)	//mov edx,[edi+49]	//cmp eax,edx
+define(dig,C7 42 4D 00 00 00 00)	//mov [edx+4D],00000000
+
 [ENABLE]
 //aobscanmodule should be used when the array of bytes change as game restart
 //otherwise we use static address for simplicity.
@@ -35,90 +43,197 @@ label(PlayerDisembark)
 label(disembarkExit)
 label(NPCDisembark)
 
+label(PlayerSwanPond)
+label(pondExit)
+label(NPCSwanPond)
+
+label(PlayerCompareMove)
+label(compareMoveExit)
+label(NPCCompareMove)
+
+label(PlayerDig)
+label(digExit)
+label(NPCDig)
+
 registersymbol(customcode)
 //============CUSTOM CODE=====================
 customcode:
 //section1
 PlayerMove:
-  cmp byte ptr [esi+22], 6
-  jne NPCMove
-  db 90 90 90 90
-  //cmp edx,eax
-  //mov [esi+4D],edx
-  jmp moveExit
+	cmp byte ptr [esi+22], 6
+	jne NPCMove
+	db 90 90 90 90
+	//cmp edx,eax
+	//mov [esi+4D],edx
+	jmp moveExit
 
 NPCMove:
-  db move
-  jmp moveExit
+	db move
+	jmp moveExit
 
 //end section1
 
 //section2
 PlayerEmbark:
-  cmp byte ptr [esi+22], 6
-  jne NPCEmbark
-  db 90 90 90 90 90 90 90
-  jmp embarkExit
+	cmp byte ptr [esi+22], 6
+	jne NPCEmbark
+	db 90 90 90 90 90 90 90
+	jmp embarkExit
 
 NPCEmbark:
-  mov [esi+4D],00000000
-  jmp embarkExit
+	db embark
+	jmp embarkExit
 
 //end section2
 
 //section3
 PlayerDisembark:
-  cmp byte ptr [esi+22], 6
-  jne NPCDisembark
-  db 90 90 90 90 90 90 90
-  jmp disembarkExit
+	cmp byte ptr [esi+22], 6
+	jne NPCDisembark
+	db 90 90 90 90 90 90 90
+	jmp disembarkExit
 
 NPCDisembark:
-   mov [esi+4D],00000000
-   jmp disembarkExit
+	db disembark
+	jmp disembarkExit
+
+//end section3
+
+//section4
+//Swan pond (+2 luck for all movement)
+//Could have further memory analysis here
+PlayerSwanPond:
+	cmp byte ptr [edi+22], 6
+	jne NPCSwanPond
+	db 90 90 90 90 90 90 90
+	jmp pondExit
+
+NPCSwanPond:
+  mov [edi+4D],00000000
+  jmp pondExit
+
+//end section4
+
+//section5
+PlayerCompareMove:
+	cmp byte ptr [edi+22], 6
+	jne NPCCompareMove
+	mov edx,[edi+4D]
+	cmp eax,edx
+	jmp compareMoveExit
+
+NPCCompareMove:
+	db copyMove
+	jmp compareMoveExit
+
+//end section5
+
+//section6
+PlayerDig:
+	cmp byte ptr [edx+22], 6
+	jne NPCDig
+	db 90 90 90 90 90 90 90
+	jmp digExit
+
+NPCDig:
+	db dig
+	jmp digExit
+
+//end section6
 
 //============END CUSTOM CODE=================
 
 //===============INJECION=====================
 "h3hota.exe"+80AA8:
-  jmp PlayerMove
-  nop
-  nop
-  moveExit:
+	jmp PlayerMove
+	nop
+	nop
+	moveExit:
 
 "h3hota.exe"+9E340:
-  jmp PlayerDisembark
-  nop
-  nop
-  disembarkExit:
+	jmp PlayerDisembark
+	nop
+	nop
+	disembarkExit:
 
 "h3hota.exe"+A0D08:
-  jmp PlayerEmbark
-  nop
-  nop
-  embarkExit:
+	jmp PlayerEmbark
+	nop
+	nop
+	embarkExit:
+
+"h3hota.exe"+A88CB:
+	jmp PlayerSwanPond
+	nop
+	pondExit:
+
+"h3hota.exe"+EC4A:
+	jmp PlayerCompareMove
+	compareMoveExit:
+
+"h3hota.exe"+F0CC:
+	jmp PlayerDig
+	nop
+	nop
+	digExit:
+
 //============END INJECION=====================
 
 [DISABLE]
 "h3hota.exe"+80AA8:
-//sub edx,ecx
-//cmp edx,eax
-//mov [esi+4D],edx
-  db move
+	db move
 
 "h3hota.exe"+9E340:
-//mov [esi+4D],00000000
-mov [esi+4D],00000000
+	db disembark
 
 "h3hota.exe"+A0D08:
-mov [esi+4D],00000000
-//  db C7 46 4D 00000000
+	db embark
+
+"h3hota.exe"+A88CB:
+	db pond
+
+"h3hota.exe"+EC4A:
+	db copyMove
+
+"h3hota.exe"+F0CC:
+	db dig
 
 unregistersymbol(customcode)
 dealloc(customcode)
 </AssemblerScript>
     </CheatEntry>
   </CheatEntries>
+  <CheatCodes>
+    <CodeEntry>
+      <Description>Change of mov [edx+4D],00000000</Description>
+      <Address>0040F0CC</Address>
+      <ModuleName>h3hota.exe</ModuleName>
+      <ModuleNameOffset>F0CC</ModuleNameOffset>
+      <Before>
+        <Byte>01</Byte>
+        <Byte>6A</Byte>
+        <Byte>01</Byte>
+        <Byte>8B</Byte>
+        <Byte>CB</Byte>
+      </Before>
+      <Actual>
+        <Byte>C7</Byte>
+        <Byte>42</Byte>
+        <Byte>4D</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>E8</Byte>
+        <Byte>68</Byte>
+        <Byte>6C</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </After>
+    </CodeEntry>
+  </CheatCodes>
   <UserdefinedSymbols>
     <SymbolEntry>
       <Name>INJECT</Name>
