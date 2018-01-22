@@ -539,50 +539,10 @@ dealloc(newcode)
       </After>
     </CodeEntry>
   </CheatCodes>
-  <UserdefinedSymbols>
-    <SymbolEntry>
-      <Name>inventory</Name>
-      <Address>7FF61CD46A9C</Address>
-    </SymbolEntry>
+  <UserdefinedSymbols>    
     <SymbolEntry>
       <Name>stats</Name>
       <Address>7FF65FBEF1D2</Address>
-    </SymbolEntry>
-    <SymbolEntry>
-      <Name>set_clip</Name>
-      <Address>7FF65FC4B8E1</Address>
-    </SymbolEntry>
-    <SymbolEntry>
-      <Name>teleport_bkp1</Name>
-      <Address>7FF6173B00BC</Address>
-    </SymbolEntry>
-    <SymbolEntry>
-      <Name>teleport_bkp2</Name>
-      <Address>7FF6173B00CC</Address>
-    </SymbolEntry>
-    <SymbolEntry>
-      <Name>_UITerminalStoredBytes</Name>
-      <Address>15ADE610000</Address>
-    </SymbolEntry>
-    <SymbolEntry>
-      <Name>_UILockpickingStoredBytes</Name>
-      <Address>15ADE610010</Address>
-    </SymbolEntry>
-    <SymbolEntry>
-      <Name>energy</Name>
-      <Address>7FF67BE70C56</Address>
-    </SymbolEntry>
-    <SymbolEntry>
-      <Name>energy2</Name>
-      <Address>7FF67BE70BF4</Address>
-    </SymbolEntry>
-    <SymbolEntry>
-      <Name>energy3</Name>
-      <Address>7FF67BF0DC64</Address>
-    </SymbolEntry>
-    <SymbolEntry>
-      <Name>pGameSpeed</Name>
-      <Address>7FF67B0A00DD</Address>
     </SymbolEntry>
     <SymbolEntry>
       <Name>player</Name>
@@ -599,23 +559,7 @@ dealloc(newcode)
     <SymbolEntry>
       <Name>god_code</Name>
       <Address>7FF6F4BD0000</Address>
-    </SymbolEntry>
-    <SymbolEntry>
-      <Name>NoRecoilSpread_AOB</Name>
-      <Address>7FF6F53FF880</Address>
-    </SymbolEntry>
-    <SymbolEntry>
-      <Name>NoScopeMove_AOB</Name>
-      <Address>7FF6F5A165BB</Address>
-    </SymbolEntry>
-    <SymbolEntry>
-      <Name>reload</Name>
-      <Address>7FF6F596DFBF</Address>
-    </SymbolEntry>
-    <SymbolEntry>
-      <Name>weight</Name>
-      <Address>7FF6F4FF1181</Address>
-    </SymbolEntry>
+    </SymbolEntry> 
   </UserdefinedSymbols>  
   <Comments>Info about this table:
 </Comments>
